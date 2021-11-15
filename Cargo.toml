@@ -11,3 +11,12 @@ solana-client = "1.8.2"
 solana-sdk = "1.8.2"
 quarry-mine = "1.10.0"
 anchor-client = "0.18.0"
+axum = "0.3.2"
+tokio = { version = "1.13.0", features = ["full"] }
+futures = "0.3.12"
+dotenv = "0.15.0"
+serde = "1.0.130"
+serde_json = "1.0.70"
+tracing = "0.1.29"
+tracing-subscriber = "0.3"
+

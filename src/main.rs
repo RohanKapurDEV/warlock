@@ -1,90 +1,51 @@
-use anchor_client::anchor_lang::AccountDeserialize;
-use quarry_mine::Quarry;
-use solana_client::client_error::ClientError;
-use solana_client::rpc_client::RpcClient;
-use solana_client::rpc_config::{RpcAccountInfoConfig, RpcProgramAccountsConfig};
-use solana_client::rpc_filter::{Memcmp, MemcmpEncodedBytes, RpcFilterType};
-use solana_program::pubkey::Pubkey;
-use solana_sdk::commitment_config::CommitmentConfig;
-use std::str::Utf8Error;
-use std::{str::FromStr, vec};
-
+mod handlers;
 mod utils;
+use handlers::*;
+use tracing::Level;
 use utils::*;
 
-fn main() {
-    let x = fetch_and_deserialize_quarry_account(
-        &Network::Mainnet,
-        &Pubkey::from_str("Hs1X5YtXwZACueUtS9azZyXFDWVxAMLvm3tttubpK7ph").unwrap(),
-    );
-}
+use axum::{
+    body::Body,
+    http::StatusCode,
+    response::IntoResponse,
+    routing::{delete, get, post},
+    Json, Router,
+};
+use dotenv::dotenv;
+use serde::{Deserialize, Serialize};
+use std::env;
+use std::net::SocketAddr;
 
-/// Fetch all quarries for any LP token. Returns a vector of Pubkeys.
-pub fn fetch_quarries_for_lp(network: &Network, lp_token_mint: &Pubkey) -> Vec<Pubkey> {
-    let quarry_mine_pubkey = Pubkey::from_str(QUARRY_MINE_PUBKEY).unwrap();
+#[tokio::main]
+async fn main() {
+    dotenv().ok();
+    tracing_subscriber::fmt::init();
 
-    let token_mint_filter = Memcmp {
-        offset: 8 + 32,
-        bytes: MemcmpEncodedBytes::Bytes(lp_token_mint.to_bytes().into()),
-        encoding: None,
-    };
+    // .env var checks
+    let port_env = env::var("PORT").expect("PORT must be set");
+    let port = port_env.parse::<u16>().unwrap();
 
-    let conf: RpcProgramAccountsConfig = RpcProgramAccountsConfig {
-        filters: Some(vec![RpcFilterType::Memcmp(token_mint_filter)]),
-        account_config: RpcAccountInfoConfig::default(),
-        with_context: None,
-    };
+    // Declare API router and routes
+    let app: Router<Body> = Router::new()
+        .route("/", get(root))
+        .route("/check", get(check_something))
+        .route("/getBlockheight", get(fetch_blockheight_handler));
 
-    let rpc = RpcClient::new_with_commitment(network.fetch_url(), CommitmentConfig::confirmed());
-    let res = rpc
-        .get_program_accounts_with_config(&quarry_mine_pubkey, conf)
+    // Bind server to PORT and serve the router
+    let addr = SocketAddr::from(([127, 0, 0, 1], port));
+    tracing::event!(Level::INFO, "Warlock started on port {}", port);
+    axum::Server::bind(&addr)
+        .serve(app.into_make_service())
+        .await
         .unwrap();
-
-    let mut pubkey_vec = vec![];
-
-    for item in res.iter() {
-        pubkey_vec.push(item.0)
-    }
-
-    pubkey_vec
 }
 
-fn fetch_and_deserialize_quarry_account(
-    network: &Network,
-    quarry_pubkey: &Pubkey,
-) -> Result<Quarry, Utf8Error> {
-    let rpc = RpcClient::new_with_commitment(network.fetch_url(), CommitmentConfig::confirmed());
-    let account_data = rpc.get_account(quarry_pubkey).unwrap().data;
-    let raw_bytes: &mut &[u8] = &mut &account_data[..];
-
-    let quarry: Quarry = Quarry::try_deserialize(raw_bytes).unwrap();
-    // Uncomment to test proper deserialization of quarry data
-    // println!("{:?}", quarry.token_mint_key.to_string());
-    // println!("{:?}", quarry.rewarder_key.to_string());
-    Ok(quarry)
+async fn root() -> &'static str {
+    "Hello, World!"
 }
 
-fn fetch_and_deserialize_miner_account(
-    network: &Network,
-    miner_pubkey: &Pubkey,
-) -> Result<Quarry, Utf8Error> {
-    let rpc = RpcClient::new_with_commitment(network.fetch_url(), CommitmentConfig::confirmed());
-    let account_data = rpc.get_account(miner_pubkey).unwrap().data;
-    let raw_bytes: &mut &[u8] = &mut &account_data[..];
+async fn check_something(Json(payload): Json<NetworkConfig>) -> impl IntoResponse {
+    let x: NetworkConfig = payload.into();
 
-    let quarry: Quarry = Quarry::try_deserialize(raw_bytes).unwrap();
-    // Uncomment to test proper deserialization of quarry data
-    // println!("{:?}", quarry.token_mint_key.to_string());
-    // println!("{:?}", quarry.rewarder_key.to_string());
-    Ok(quarry)
-}
-
-/// Fetches the current blockheight
-fn fetch_blockheight(network: &Network) -> Result<u64, ClientError> {
-    let rpc = RpcClient::new_with_commitment(network.fetch_url(), CommitmentConfig::confirmed());
-    rpc.get_block_height()
-}
-
-pub enum ErrorCode {
-    RpcAccountFetchError,
+    (StatusCode::OK, Json(x))
 }
