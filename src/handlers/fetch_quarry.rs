@@ -100,7 +100,6 @@ pub struct QuarryWrapper {
 }
 
 impl QuarryWrapper {
-    /// Wrap a normal Quarry into a WrappedQuarry that implements Serialize and Deserialize
     fn wrap(quarry: &Account) -> Result<Self, ProgramError> {
         let res = deserialize_quarry(quarry);
 
