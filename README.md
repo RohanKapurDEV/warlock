@@ -2,8 +2,6 @@
 
 Warlock is a tiny web API layer around Quarry Protocol and has endpoints to deserialize Quarry accounts like quarries, miners, and rewarders to JSON. It also has an endpoint to allow you to fetch all miners that belong to a quarry.
 
-<br/>
-
 ## Running Warlock locally
 
 Clone the repo, get into the project root and run the following.
@@ -15,8 +13,6 @@ cargo run
 ```
 
 I'm always happy to accept PRs btw so feel free to fork the repo and experiment
-
-<br/>
 
 ## Request/Response schemas
 
@@ -53,7 +49,16 @@ The value for `variant` can be either `"Mainnet"`, `"Devnet"` or `"Localnet"`, w
 
 ### Pubkey config
 
-The pubkey config object allows you to specify to an endpoint, a Pubkey that you want it to interact with while performing it's logic. The structure is as follows:
+The pubkey config object allows you to specify to an endpoint, a Pubkey that you want it to interact with while performing it's logic. It is implemented in rust like so:
+
+```rust
+#[derive(Serialize, Deserialize)]
+pub struct PubkeyConfig {
+    pub pubkey: Pubkey,
+}
+```
+
+When building a network config from a client, it is crafted in JSON as follows:
 
 ```JSON
 {
