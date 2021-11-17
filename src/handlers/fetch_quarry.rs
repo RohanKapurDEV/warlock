@@ -8,7 +8,7 @@ use solana_program::pubkey::Pubkey;
 use solana_sdk::{account::Account, program_error::ProgramError};
 use tracing::Level;
 
-// Fetch the quarry account specified and deserialize to JSON
+/// Fetch the quarry account specified and deserialize to JSON
 pub async fn fetch_quarry_handler(
     Json(payload): Json<FetchAccountRequest>,
 ) -> Result<Json<FetchQuarryResponse>, (StatusCode, Json<serde_json::Value>)> {
@@ -51,11 +51,32 @@ pub async fn fetch_quarry_handler(
     }
 }
 
+/// Example request
+///
+/// {
+///     "network_config": {
+///         "variant": "Mainnet"
+///     },
+///     "pubkey_config": {
+///         "pubkey": [...] ~ an array of 32 unsigned 8-bit integers
+///     }
+/// }
 #[derive(Serialize, Deserialize)]
 pub struct FetchAccountRequest {
     pub network_config: NetworkConfig,
     pub pubkey_config: PubkeyConfig,
 }
+
+/// Example response
+///
+/// {
+///     "network_config": {
+///         "variant": "Mainnet"
+///     },
+///     quarry: {...} ~ JSON representation of Quarry (see QuarryWrapper for format)
+/// }
+///
+/// NOTE: All pubkeys will be represented as an array of 32 unsigned 8-bit integers
 #[derive(Serialize, Deserialize)]
 pub struct FetchQuarryResponse {
     pub network_config: NetworkConfig,

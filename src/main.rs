@@ -4,15 +4,8 @@ use handlers::*;
 use tracing::Level;
 use utils::*;
 
-use axum::{
-    body::Body,
-    http::StatusCode,
-    response::IntoResponse,
-    routing::{delete, get, post},
-    Json, Router,
-};
+use axum::{body::Body, routing::get, Router};
 use dotenv::dotenv;
-use serde::{Deserialize, Serialize};
 use std::env;
 use std::net::SocketAddr;
 

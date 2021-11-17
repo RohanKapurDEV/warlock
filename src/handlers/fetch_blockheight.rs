@@ -1,5 +1,4 @@
 use crate::utils::{fetch_blockheight, network_utils::NetworkConfig};
-use crate::Network;
 use axum::{http::StatusCode, Json};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -45,13 +44,4 @@ pub async fn fetch_blockheight_handler(
 pub struct FetchBlockheightResponse {
     network_config: NetworkConfig,
     blockheight: u64,
-}
-
-impl FetchBlockheightResponse {
-    pub fn new(blockheight: u64, network: Network) -> Self {
-        Self {
-            network_config: NetworkConfig { variant: network },
-            blockheight: blockheight,
-        }
-    }
 }
