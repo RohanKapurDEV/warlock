@@ -75,11 +75,11 @@ pub fn pubkey_string_to_bytes(addr: &str) -> [u8; 32] {
 }
 ```
 
-### `getQuarry`, `getMiner`, `getRewarder`
+### `/getQuarry`, `/getMiner`, `/getRewarder`
 
 The request and response schemas for these endpoints are similar enough such that we can group the documentation together.
 
-All of the use the exact same Request format, implemented in Rust as follows:
+All of the use the exact same Request format expected to be passed in as JSON in the request body, implemented in Rust as follows:
 
 ```rust
 #[derive(Serialize, Deserialize)]
@@ -103,7 +103,7 @@ Crafting this request in JSON from a client may look something like this
 
 ```
 
-The `"pubkey"` would once again, be an array of 32 unsigned 8-bit integers, or in other words, the byte-array representation of the pubkey of the quarry, miner, or rewarder you're trying to fetch.
+The `"pubkey"` would, once again, be an array of 32 unsigned 8-bit integers, or in other words, the byte-array representation of the pubkey of the quarry, miner, or rewarder you're trying to fetch.
 
 The response schemas for these endpoints are mostly the same with a minor difference, implemented in Rust as follows:
 
