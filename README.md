@@ -2,7 +2,21 @@
 
 Warlock is a tiny web API layer around Quarry Protocol and has endpoints to deserialize Quarry accounts like quarries, miners, and rewarders to JSON. It also has an endpoint to allow you to fetch all miners that belong to a quarry.
 
----
+<br/>
+
+## Running Warlock locally
+
+Clone the repo, get into the project root and run the following.
+
+```
+cargo build
+touch .env && echo "PORT=3000" > .env
+cargo run
+```
+
+I'm always happy to accept PRs btw so feel free to fork the repo and experiment
+
+<br/>
 
 ## Request/Response schemas
 
@@ -10,11 +24,28 @@ Before you read the req/res schemas, it's useful to know about some custom types
 
 ### Network config
 
-The network config object allows you to specify to an endpoint, a Network that you want it to interact with while performing it's logic. The structure is as follows:
+The network config object allows you to specify to an endpoint, a Network that you want it to interact with while performing it's logic. It is implemented in rust like so:
+
+```rust
+#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
+pub enum Network {
+    Mainnet,
+    Devnet,
+    Localnet,
+}
+
+/// Network config object for requests to use
+#[derive(Debug, Serialize, Deserialize)]
+pub struct NetworkConfig {
+    pub variant: Network,
+}
+```
+
+When building a network config from a client, it is crafted in JSON as follows:
 
 ```JSON
 {
-    "variant": VARIANT_HERE
+    "variant": SOME_VARIANT_HERE
 }
 ```
 
@@ -99,7 +130,7 @@ The wrapper accounts (`MinerWrapper`, `QuarryWrapper`, `RewarderWrapper`) have t
 The actual JSON returned from the endpoints would look like this:
 
 ```JSON
-    // Response for an example getRewarder request
+    // Response for an example getRewarder request. You can imagine what the other two look like based off this :)
 
     {
     "network_config": {
