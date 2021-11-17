@@ -75,11 +75,10 @@ pub fn pubkey_string_to_bytes(addr: &str) -> [u8; 32] {
 }
 ```
 
-### `/getQuarry`, `/getMiner`, `/getRewarder`
+### `/quarry`, `/miner`, `/rewarder`
 
 The request and response schemas for these endpoints are similar enough such that we can group the documentation together.
-
-All of the use the exact same Request format expected to be passed in as JSON in the request body, implemented in Rust as follows:
+All 3 endpoints are meant to be called using GET requests and they all use the exact same request format expected to be passed in as JSON in the request body, implemented in Rust as follows:
 
 ```rust
 #[derive(Serialize, Deserialize)]
@@ -89,7 +88,7 @@ pub struct FetchAccountRequest {
 }
 ```
 
-Crafting this request in JSON from a client may look something like this
+Crafting this request in JSON from a client looks like this:
 
 ```JSON
 {

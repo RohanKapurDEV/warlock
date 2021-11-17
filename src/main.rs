@@ -20,10 +20,10 @@ async fn main() {
     // Declare API router and routes
     let app: Router<Body> = Router::new()
         .route("/", get(root))
-        .route("/getBlockheight", get(fetch_blockheight_handler))
-        .route("/getQuarry", get(fetch_quarry_handler))
-        .route("/getMiner", get(fetch_miner_handler))
-        .route("/getRewarder", get(fetch_rewarder_handler));
+        .route("/blockheight", get(fetch_blockheight_handler))
+        .route("/quarry", get(fetch_quarry_handler))
+        .route("/miner", get(fetch_miner_handler))
+        .route("/rewarder", get(fetch_rewarder_handler));
 
     // Bind server to PORT and serve the router
     let addr = SocketAddr::from(([127, 0, 0, 1], port));
