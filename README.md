@@ -67,6 +67,8 @@ When building a network config from a client, it is crafted in JSON as follows:
 The value for `pubkey` should be the byte-array representation of the public key you're passing in which should be an array of 32 unsigned 8-bit integers. If you're using this from a rust client and need to grab the bytes from a pubkey string, you can use the following:
 
 ```rust
+use solana_program::pubkey::Pubkey;
+
 pub fn pubkey_string_to_bytes(addr: &str) -> [u8; 32] {
     let x = Pubkey::from_str(addr).unwrap();
     x.to_bytes()
