@@ -1,4 +1,4 @@
-use crate::utils::{network_utils::NetworkConfig, rpc::fetch_account};
+use crate::utils::{network_utils::NetworkConfig, pubkeys::PubkeyConfig, rpc::fetch_account};
 use anchor_client::anchor_lang::AccountDeserialize;
 use axum::{http::StatusCode, Json};
 use quarry_mine::Quarry;
@@ -8,6 +8,7 @@ use solana_program::pubkey::Pubkey;
 use solana_sdk::{account::Account, program_error::ProgramError};
 use tracing::Level;
 
+// Fetch the quarry account specified and deserialize to JSON
 pub async fn fetch_quarry_handler(
     Json(payload): Json<FetchAccountRequest>,
 ) -> Result<Json<FetchQuarryResponse>, (StatusCode, Json<serde_json::Value>)> {
@@ -29,6 +30,7 @@ pub async fn fetch_quarry_handler(
                         quarry: value,
                     }))
                 }
+
                 Err(_e) => {
                     tracing::event!(Level::ERROR, "Quarry wrap failed - Step 2/2");
                     Err((
@@ -38,6 +40,7 @@ pub async fn fetch_quarry_handler(
                 }
             }
         }
+
         Err(_e) => {
             tracing::event!(Level::ERROR, "Account fetch failed - Step 1/2");
             Err((
@@ -52,11 +55,6 @@ pub async fn fetch_quarry_handler(
 pub struct FetchAccountRequest {
     pub network_config: NetworkConfig,
     pub pubkey_config: PubkeyConfig,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct PubkeyConfig {
-    pub pubkey: Pubkey,
 }
 #[derive(Serialize, Deserialize)]
 pub struct FetchQuarryResponse {
