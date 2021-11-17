@@ -22,7 +22,8 @@ async fn main() {
         .route("/", get(root))
         .route("/getBlockheight", get(fetch_blockheight_handler))
         .route("/getQuarry", get(fetch_quarry_handler))
-        .route("/getMiner", get(fetch_miner_handler));
+        .route("/getMiner", get(fetch_miner_handler))
+        .route("/getRewarder", get(fetch_rewarder_handler));
 
     // Bind server to PORT and serve the router
     let addr = SocketAddr::from(([127, 0, 0, 1], port));
