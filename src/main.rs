@@ -2,7 +2,6 @@ mod handlers;
 mod utils;
 use handlers::*;
 use tracing::Level;
-use utils::*;
 
 use axum::{body::Body, routing::get, Router};
 use dotenv::dotenv;
@@ -22,7 +21,8 @@ async fn main() {
     let app: Router<Body> = Router::new()
         .route("/", get(root))
         .route("/getBlockheight", get(fetch_blockheight_handler))
-        .route("/getQuarry", get(fetch_quarry_handler));
+        .route("/getQuarry", get(fetch_quarry_handler))
+        .route("/getMiner", get(fetch_miner_handler));
 
     // Bind server to PORT and serve the router
     let addr = SocketAddr::from(([127, 0, 0, 1], port));

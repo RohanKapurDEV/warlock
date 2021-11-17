@@ -1,4 +1,4 @@
-use crate::utils::{network_utils::NetworkConfig, pubkeys::PubkeyConfig, rpc::fetch_account};
+use crate::utils::*;
 use anchor_client::anchor_lang::AccountDeserialize;
 use axum::{http::StatusCode, Json};
 use quarry_mine::Quarry;
@@ -35,7 +35,7 @@ pub async fn fetch_quarry_handler(
                     tracing::event!(Level::ERROR, "Quarry wrap failed - Step 2/2");
                     Err((
                         StatusCode::INTERNAL_SERVER_ERROR,
-                        Json(Value::String("Failed to fetch blockheight".to_string())),
+                        Json(Value::String("Failed to wrap Quarry".to_string())),
                     ))
                 }
             }
@@ -49,22 +49,6 @@ pub async fn fetch_quarry_handler(
             ))
         }
     }
-}
-
-/// Example request
-///
-/// {
-///     "network_config": {
-///         "variant": "Mainnet"
-///     },
-///     "pubkey_config": {
-///         "pubkey": [...] ~ an array of 32 unsigned 8-bit integers
-///     }
-/// }
-#[derive(Serialize, Deserialize)]
-pub struct FetchAccountRequest {
-    pub network_config: NetworkConfig,
-    pub pubkey_config: PubkeyConfig,
 }
 
 /// Example response
@@ -83,8 +67,8 @@ pub struct FetchQuarryResponse {
     pub quarry: QuarryWrapper,
 }
 
-/// Need to build a quarry wrapper because quarry accounts do not implement Serialize and
-/// Deserialize by default which is needed for handler response
+/// This type is required because quarry accounts do not natively implement Serialize and
+/// Deserialize by default which is needed for axum handler response
 #[derive(Serialize, Deserialize)]
 pub struct QuarryWrapper {
     /// Rewarder who owns this quarry
