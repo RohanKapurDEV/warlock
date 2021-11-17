@@ -1,6 +1,6 @@
 # Warlock
 
-Warlock is a tiny web API layer around Quarry Protocol and has endpoints to deserialize Quarry accounts like quarries, miners, and rewarders to JSON. It also has an endpoint to allow you to fetch all miners that belong to a quarry.
+Warlock is a tiny web API layer around Quarry Protocol and has endpoints to deserialize Quarry accounts like quarries, miners, and rewarders to JSON.
 
 ## Running Warlock locally
 
