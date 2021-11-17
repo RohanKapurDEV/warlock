@@ -8,13 +8,18 @@ use tracing::Level;
 pub async fn fetch_blockheight_handler(
     Json(payload): Json<NetworkConfig>,
 ) -> Result<Json<FetchBlockheightResponse>, (StatusCode, Json<serde_json::Value>)> {
-    let network_config: NetworkConfig = payload.into();
-    let network = network_config.variant;
+    let network = payload.variant;
     let blockheight = fetch_blockheight(&network);
 
     match blockheight {
-        Ok(value) => Ok(Json(FetchBlockheightResponse::new(value, network))),
-        Err(_client_err) => {
+        Ok(value) => {
+            tracing::event!(Level::INFO, "Blockheight fetch request successful");
+            Ok(Json(FetchBlockheightResponse {
+                network_config: payload.into(),
+                blockheight: value,
+            }))
+        }
+        Err(_e) => {
             tracing::event!(Level::ERROR, "Unable to fetch blockheight on {:?}", network);
             Err((
                 StatusCode::INTERNAL_SERVER_ERROR,
@@ -24,16 +29,25 @@ pub async fn fetch_blockheight_handler(
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+/// Example response:
+///
+/// {
+///     "network_config":
+///     {
+///         "variant": "Mainnet"
+///     },
+///     "blockheight": 96484360
+/// }
+#[derive(Debug, Serialize, Deserialize)]
 pub struct FetchBlockheightResponse {
-    network: Network,
+    network_config: NetworkConfig,
     blockheight: u64,
 }
 
 impl FetchBlockheightResponse {
     pub fn new(blockheight: u64, network: Network) -> Self {
         Self {
-            network: network,
+            network_config: NetworkConfig { variant: network },
             blockheight: blockheight,
         }
     }
