@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use tracing::Level;
 
+/// Fetch the current blockheight of the specified network
 pub async fn fetch_blockheight_handler(
     Json(payload): Json<NetworkConfig>,
 ) -> Result<Json<FetchBlockheightResponse>, (StatusCode, Json<serde_json::Value>)> {
@@ -28,6 +29,8 @@ pub async fn fetch_blockheight_handler(
         }
     }
 }
+
+// Fetch blockheight request is simply a network_utils::NetworkConfig object
 
 /// Example response:
 ///
