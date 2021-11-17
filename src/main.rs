@@ -28,8 +28,8 @@ async fn main() {
     // Declare API router and routes
     let app: Router<Body> = Router::new()
         .route("/", get(root))
-        .route("/check", get(check_something))
-        .route("/getBlockheight", get(fetch_blockheight_handler));
+        .route("/getBlockheight", get(fetch_blockheight_handler))
+        .route("/getQuarry", get(fetch_quarry_handler));
 
     // Bind server to PORT and serve the router
     let addr = SocketAddr::from(([127, 0, 0, 1], port));
@@ -42,10 +42,4 @@ async fn main() {
 
 async fn root() -> &'static str {
     "Hello, World!"
-}
-
-async fn check_something(Json(payload): Json<NetworkConfig>) -> impl IntoResponse {
-    let x: NetworkConfig = payload.into();
-
-    (StatusCode::OK, Json(x))
 }
