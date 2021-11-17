@@ -42,18 +42,6 @@ use crate::utils::*;
 //     pubkey_vec
 // }
 
-pub fn fetch_and_deserialize_quarry_account(
-    network: &Network,
-    quarry_pubkey: &Pubkey,
-) -> Result<Quarry, ProgramError> {
-    let rpc = RpcClient::new_with_commitment(network.fetch_url(), CommitmentConfig::confirmed());
-    let account_data = rpc.get_account(quarry_pubkey).unwrap().data;
-    let raw_bytes: &mut &[u8] = &mut &account_data[..];
-
-    let quarry: Quarry = Quarry::try_deserialize(raw_bytes)?;
-    Ok(quarry)
-}
-
 /// Fetches the current blockheight
 pub fn fetch_blockheight(network: &Network) -> Result<u64, ClientError> {
     let rpc = RpcClient::new_with_commitment(network.fetch_url(), CommitmentConfig::confirmed());
