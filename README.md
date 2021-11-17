@@ -12,8 +12,6 @@ touch .env && echo "PORT=3000" > .env
 cargo run
 ```
 
-I'm always happy to accept PRs btw so feel free to fork the repo and experiment
-
 ## Request/Response schemas
 
 Before you read the req/res schemas, it's useful to know about some custom types that they use and how they're expected to be passed in from a client.
