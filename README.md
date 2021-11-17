@@ -35,7 +35,7 @@ pub struct NetworkConfig {
 }
 ```
 
-When building a network config from a client, it is crafted in JSON as follows:
+In JSON, this would be:
 
 ```JSON
 {
@@ -56,7 +56,7 @@ pub struct PubkeyConfig {
 }
 ```
 
-When building a network config from a client, it is crafted in JSON as follows:
+In JSON, this would be:
 
 ```JSON
 {
@@ -88,7 +88,7 @@ pub struct FetchAccountRequest {
 }
 ```
 
-Crafting this request in JSON from a client looks like this:
+Crafting the request body in JSON from a client looks like this:
 
 ```JSON
 {
