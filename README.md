@@ -6,7 +6,7 @@ Warlock is a tiny web API layer around Quarry Protocol and has endpoints to dese
 
 Clone the repo, get into the project root and run the following.
 
-```
+```zsh
 cargo build
 touch .env && echo "PORT=3000" > .env
 cargo run
