@@ -1,5 +1,7 @@
 # Warlock
 
+![warlock_gif](https://i.imgur.com/DSWEB2q.gif)
+
 Warlock is a tiny web API layer around Quarry Protocol and has endpoints to deserialize Quarry accounts like quarries, miners, and rewarders to JSON.
 
 ## Running Warlock locally
